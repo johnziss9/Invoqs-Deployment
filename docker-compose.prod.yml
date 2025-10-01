@@ -41,7 +41,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_URLS: ${ASPNETCORE_URLS}
-      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      ConnectionStrings__InvoqsDBConnection: ${ConnectionStrings__InvoqsDBConnection}
       JwtSettings__SecretKey: ${JwtSettings__SecretKey}
       JwtSettings__Issuer: ${JwtSettings__Issuer}
       JwtSettings__Audience: ${JwtSettings__Audience}
