@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: invoqs-postgres-staging
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_staging_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - invoqs-staging-network
+
+  api:
+    build:
+      context: ../Invoqs.API
+      dockerfile: Dockerfile
+    container_name: invoqs-api-staging
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      JwtSettings__SecretKey: ${JwtSettings__SecretKey}
+      JwtSettings__Issuer: ${JwtSettings__Issuer}
+      JwtSettings__Audience: ${JwtSettings__Audience}
+      JwtSettings__ExpiryInMinutes: ${JwtSettings__ExpiryInMinutes}
+    ports:
+      - "7001:80"
+    networks:
+      - invoqs-staging-network
+    depends_on:
+      - postgres
+
+  blazor:
+    build:
+      context: ../Invoqs
+      dockerfile: Dockerfile
+    container_name: invoqs-blazor-staging
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      API_BASE_URL: ${API_BASE_URL}
+    ports:
+      - "6001:80"
+    networks:
+      - invoqs-staging-network
+    depends_on:
+      - api
+
+volumes:
+  postgres_staging_data:
+
+networks:
+  invoqs-staging-network:
+    driver: bridge

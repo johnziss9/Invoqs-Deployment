@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: invoqs-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - invoqs-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: invoqs-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - invoqs-network
+    depends_on:
+      - postgres
+
+  api:
+    build:
+      context: ../Invoqs.API
+      dockerfile: Dockerfile
+    container_name: invoqs-api-prod
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}
+      JwtSettings__SecretKey: ${JwtSettings__SecretKey}
+      JwtSettings__Issuer: ${JwtSettings__Issuer}
+      JwtSettings__Audience: ${JwtSettings__Audience}
+      JwtSettings__ExpiryInMinutes: ${JwtSettings__ExpiryInMinutes}
+    ports:
+      - "7000:80"
+    networks:
+      - invoqs-network
+    depends_on:
+      - postgres
+
+  blazor:
+    build:
+      context: ../Invoqs
+      dockerfile: Dockerfile
+    container_name: invoqs-blazor-prod
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      API_BASE_URL: ${API_BASE_URL}
+    ports:
+      - "6000:80"
+    networks:
+      - invoqs-network
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  invoqs-network:
+    driver: bridge
