@@ -18,7 +18,7 @@ services:
 
   api:
     build:
-      context: ../Invoqs.API
+      context: ../Invoqs.API-Staging
       dockerfile: Dockerfile
     container_name: invoqs-api-staging
     restart: unless-stopped
@@ -39,7 +39,7 @@ services:
 
   blazor:
     build:
-      context: ../Invoqs
+      context: ../Invoqs-Staging
       dockerfile: Dockerfile
     container_name: invoqs-blazor-staging
     restart: unless-stopped
