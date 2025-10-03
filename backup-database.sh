@@ -11,7 +11,7 @@ echo "💾 Creating database backup..."
 mkdir -p $BACKUP_DIR
 
 # Backup production database
-docker exec invoqs-postgres-prod pg_dump -U invoqs_user invoqs_production > $BACKUP_FILE
+docker exec invoqs-postgres-prod pg_dump -U johnz invoqs_prod > $BACKUP_FILE
 
 # Compress backup
 gzip $BACKUP_FILE

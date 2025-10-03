@@ -44,7 +44,7 @@ sleep 10
 
 # Health check
 echo "🏥 Running health checks..."
-if curl -f -s http://localhost:7001/health > /dev/null 2>&1; then
+if curl -f -s http://localhost:7001/api/health > /dev/null 2>&1; then
     echo "✅ API health check passed"
 else
     echo "⚠️  API health check failed (endpoint may not exist yet)"

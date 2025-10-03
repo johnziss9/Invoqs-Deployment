@@ -70,9 +70,9 @@ fi
 echo "🏥 Running health checks..."
 HEALTH_CHECK_PASSED=true
 
-if curl -f -s https://api.invoqs.com/health > /dev/null 2>&1; then
+if curl -f -s https://api.invoqs.com/api/health > /dev/null 2>&1; then
     echo "✅ API health check passed"
-elif curl -f -s http://localhost:7000/health > /dev/null 2>&1; then
+elif curl -f -s http://localhost:7000/api/health > /dev/null 2>&1; then
     echo "✅ API health check passed (localhost)"
 else
     echo "❌ API health check FAILED"
