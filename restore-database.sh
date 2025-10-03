@@ -28,7 +28,7 @@ cd /root/Invoqs-Deployment
 docker compose -p invoqs-prod -f docker-compose.prod.yml --env-file .env.prod stop api blazor
 
 echo "💾 Restoring database..."
-gunzip -c $BACKUP_FILE | docker exec -i invoqs-postgres-prod psql -U invoqs_user -d invoqs_production
+gunzip -c $BACKUP_FILE | docker exec -i invoqs-postgres-prod psql -U johnz -d invoqs_prod
 
 echo "🔨 Restarting containers..."
 docker compose -p invoqs-prod -f docker-compose.prod.yml --env-file .env.prod start api blazor
