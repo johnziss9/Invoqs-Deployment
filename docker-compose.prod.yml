@@ -32,6 +32,20 @@ services:
     depends_on:
       - postgres
 
+  seq:
+    image: datalust/seq:latest
+    container_name: invoqs-seq
+    restart: unless-stopped
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=${SEQ_ADMIN_PASSWORD_HASH}
+    ports:
+      - "8082:80"
+    volumes:
+      - seq_data:/data
+    networks:
+      - invoqs-network
+
   api:
     build:
       context: ../Invoqs.API
@@ -46,12 +60,15 @@ services:
       JwtSettings__Issuer: ${JwtSettings__Issuer}
       JwtSettings__Audience: ${JwtSettings__Audience}
       JwtSettings__ExpiryInMinutes: ${JwtSettings__ExpiryInMinutes}
+      Serilog__WriteTo__1__Name: "Seq"
+      Serilog__WriteTo__1__Args__serverUrl: "http://seq:5341"
     ports:
       - "7000:80"
     networks:
       - invoqs-network
     depends_on:
       - postgres
+      - seq
 
   blazor:
     build:
@@ -63,16 +80,20 @@ services:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       ASPNETCORE_URLS: ${ASPNETCORE_URLS}
       API_BASE_URL: ${API_BASE_URL}
+      Serilog__WriteTo__1__Name: "Seq"
+      Serilog__WriteTo__1__Args__serverUrl: "http://seq:5341"
     ports:
       - "6000:80"
     networks:
       - invoqs-network
     depends_on:
       - api
+      - seq
 
 volumes:
   postgres_data:
   pgadmin_data:
+  seq_data:
 
 networks:
   invoqs-network:
