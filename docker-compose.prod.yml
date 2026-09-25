@@ -60,9 +60,6 @@ services:
       JwtSettings__Issuer: ${JwtSettings__Issuer}
       JwtSettings__Audience: ${JwtSettings__Audience}
       JwtSettings__ExpiryInMinutes: ${JwtSettings__ExpiryInMinutes}
-      EmailSettings__Provider: ${JwtSettings__ExpiryInMinutes}
-      EmailSettings__SmtpServer: ${EmailSettings__SmtpServer}
-      EmailSettings__SmtpPort: ${EmailSettings__SmtpPort}
       EmailSettings__ApiKey: ${EmailSettings__ApiKey}
       EmailSettings__SenderEmail: ${EmailSettings__SenderEmail}
       EmailSettings__SenderName: ${EmailSettings__SenderName}
